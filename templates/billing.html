@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Billing - Hospital Management System{% endblock %}
+{% block page_title %}Billing & Payments{% endblock %}
+{% block breadcrumb %}Home / Billing{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Billing Summary Cards -->
+    <div class="billing-summary">
+        <div class="summary-card total">
+            <i class="fas fa-rupee-sign"></i>
+            <div class="summary-info">
+                <h3 id="totalRevenue">₹0</h3>
+                <p>Total Revenue</p>
+            </div>
+        </div>
+        <div class="summary-card paid">
+            <i class="fas fa-check-circle"></i>
+            <div class="summary-info">
+                <h3 id="paidBills">0</h3>
+                <p>Paid Bills</p>
+            </div>
+        </div>
+        <div class="summary-card pending">
+            <i class="fas fa-clock"></i>
+            <div class="summary-info">
+                <h3 id="pendingBills">0</h3>
+                <p>Pending Bills</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generate Bill Section -->
+    {% if unbilled_admissions %}
+    <div class="data-card generate-bill-card">
+        <div class="card-header">
+            <h3><i class="fas fa-file-invoice"></i> Generate Bills</h3>
+        </div>
+        <div class="card-body">
+            <p class="info-text">The following discharged patients need bills:</p>
+            <div class="unbilled-list">
+                {% for admission in unbilled_admissions %}
+                <div class="unbilled-item">
+                    <div class="patient-info">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <strong>{{ admission.patient.name if admission.patient else 'Unknown' }}</strong>
+                            <span>Admitted: {{ admission.admit_date.strftime('%d %b') if admission.admit_date else '-'
+                                }} → Discharged: {{ admission.discharge_date.strftime('%d %b') if
+                                admission.discharge_date else '-' }}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateBill({{ admission.admission_id }})">
+                        <i class="fas fa-file-invoice"></i> Generate Bill
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Bills Table -->
+    <div class="data-card">
+        <div class="card-header">
+            <h3><i class="fas fa-file-invoice-dollar"></i> All Bills</h3>
+            <div class="filter-group">
+                <select id="filterBillStatus" onchange="filterBills()">
+                    <option value="">All Status</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Pending">Pending</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="data-table" id="billsTable">
+                    <thead>
+                        <tr>
+                            <th>Bill #</th>
+                            <th>Patient</th>
+                            <th>Stay Days</th>
+                            <th>Bed Charges</th>
+                            <th>Treatment</th>
+                            <th>Doctor Fees</th>
+                            <th>Other</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bills %}
+                        <tr data-status="{{ bill.status }}">
+                            <td>#{{ bill.bill_id }}</td>
+                            <td>{{ bill.patient.name if bill.patient else 'Unknown' }}</td>
+                            <td>{{ bill.stay_days }} days</td>
+                            <td>₹{{ "{:,.0f}".format(bill.bed_charges | float) }}</td>
+                            <td>₹{{ "{:,.0f}".format(bill.treatment_cost | float) }}</td>
+                            <td>₹{{ "{:,.0f}".format(bill.doctor_fees | float) }}</td>
+                            <td>₹{{ "{:,.0f}".format(bill.other_charges | float) }}</td>
+                            <td class="bill-total">₹{{ "{:,.0f}".format(bill.total_amount | float) }}</td>
+                            <td>
+                                <span class="status-badge status-{{ bill.status | lower }}">
+                                    {{ bill.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if bill.status == 'Pending' %}
+                                <button class="btn btn-sm btn-success" onclick="markPaid({{ bill.bill_id }})">
+                                    <i class="fas fa-check"></i> Mark Paid
+                                </button>
+                                {% else %}
+                                <button class="btn btn-sm btn-secondary" onclick="printBill({{ bill.bill_id }})">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bill Details Modal -->
+<div class="modal" id="billModal">
+    <div class="modal-content bill-modal">
+        <div class="modal-header">
+            <h3><i class="fas fa-file-invoice"></i> Bill Details</h3>
+            <button class="modal-close" onclick="closeModal('billModal')">×</button>
+        </div>
+        <div class="modal-body" id="billDetails">
+            <!-- Bill details loaded here -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('billModal')">Close</button>
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Bill
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Load summary stats
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/bills')
+            .then(response => response.json())
+            .then(bills => {
+                let totalRevenue = 0;
+                let paidCount = 0;
+                let pendingCount = 0;
+
+                bills.forEach(bill => {
+                    if (bill.status === 'Paid') {
+                        totalRevenue += bill.total_amount;
+                        paidCount++;
+                    } else {
+                        pendingCount++;
+                    }
+                });
+
+                document.getElementById('totalRevenue').textContent = '₹' + totalRevenue.toLocaleString('en-IN');
+                document.getElementById('paidBills').textContent = paidCount;
+                document.getElementById('pendingBills').textContent = pendingCount;
+            });
+    });
+
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function filterBills() {
+        const status = document.getElementById('filterBillStatus').value;
+        const rows = document.querySelectorAll('#billsTable tbody tr');
+
+        rows.forEach(row => {
+            const rowStatus = row.dataset.status;
+            row.style.display = (!status || rowStatus === status) ? '' : 'none';
+        });
+    }
+
+    function generateBill(admissionId) {
+        fetch(`/api/bills/generate/${admissionId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Bill generated! Total: ₹' + result.total.toLocaleString('en-IN'));
+                    location.reload();
+                } else {
+                    alert(result.message || 'Error generating bill');
+                }
+            });
+    }
+
+    function markPaid(billId) {
+        if (confirm('Mark this bill as paid?')) {
+            fetch(`/api/bills/${billId}/pay`, { method: 'POST' })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        location.reload();
+                    }
+                });
+        }
+    }
+
+    function printBill(billId) {
+        alert('Print functionality - Bill #' + billId);
+    }
+</script>
+{% endblock %}

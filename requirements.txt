@@ -1,0 +1,27 @@
+# Flask - Web Framework
+flask==3.0.0
+
+# PostgreSQL Database Connector
+psycopg2-binary==2.9.9
+
+# SQLAlchemy - Database ORM (makes database work easier)
+flask-sqlalchemy==3.1.1
+sqlalchemy==2.0.23
+
+# Flask Login - User Authentication
+flask-login==0.6.3
+
+# Password Hashing (Security)
+werkzeug==3.0.1
+
+# For generating fake data
+faker==22.0.0
+
+# Date handling
+python-dateutil==2.8.2
+
+# Production Web Server (for deployment)
+gunicorn==21.2.0
+
+# Environment Variables
+python-dotenv==1.0.0

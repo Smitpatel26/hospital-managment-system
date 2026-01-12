@@ -1,0 +1,51 @@
+doctor_id,name,gender,specialization,qualification,experience_years,contact,email,is_available
+1,Dr. Lakshmi Joshi,F,Dermatology,"MBBS, MD",14,+91 7766448407,lakshmi.joshi85@outlook.com,True
+2,Dr. Sunita Menon,F,Gastroenterology,"MBBS, MD",27,+91 8414529202,sunita.menon17@yahoo.com,True
+3,Dr. Pushpa Verma,F,Cardiology,"MBBS, MD, DM",13,+91 9085086983,pushpa.verma64@yahoo.com,True
+4,Dr. Ganesh Thakur,M,Dermatology,"MBBS, MD",8,+91 9311474410,ganesh.thakur73@outlook.com,True
+5,Dr. Dhruv Joshi,M,Oncology,"MBBS, MD, DNB",3,+91 7698799796,dhruv.joshi92@yahoo.com,False
+6,Dr. Usha Pandey,F,Gastroenterology,MBBS,21,+91 8977964246,usha.pandey49@gmail.com,True
+7,Dr. Sachin Joshi,M,Neurology,"MBBS, FRCS",24,+91 7891017241,sachin.joshi89@hospital.org,False
+8,Dr. Pari Joshi,F,Nephrology,MBBS,4,+91 7933149387,pari.joshi29@yahoo.com,True
+9,Dr. Pushpa Malhotra,F,General Medicine,"MBBS, FRCS",24,+91 8626598717,pushpa.malhotra25@hospital.org,True
+10,Dr. Karan Iyer,M,Cardiology,"MBBS, MS",28,+91 9770211269,karan.iyer24@gmail.com,True
+11,Dr. Ritvik Patel,M,Pediatrics,"MBBS, MS, MCh",17,+91 9920859036,ritvik.patel69@gmail.com,True
+12,Dr. Amit Verma,M,General Medicine,MBBS,5,+91 7605662887,amit.verma68@gmail.com,True
+13,Dr. Rita Mehta,F,General Medicine,"MBBS, MS",28,+91 8534834269,rita.mehta69@gmail.com,False
+14,Dr. Meera Mehta,F,Cardiology,"MBBS, MS",16,+91 7986530166,meera.mehta73@outlook.com,True
+15,Dr. Mala Rao,F,Ophthalmology,MBBS,24,+91 7992687302,mala.rao79@yahoo.com,True
+16,Dr. Jyoti Patil,F,Pulmonology,"MBBS, MD",12,+91 8309570115,jyoti.patil89@hospital.org,True
+17,Dr. Tarun Chatterjee,M,Ophthalmology,MBBS,5,+91 7367798180,tarun.chatterjee42@yahoo.com,True
+18,Dr. Geeta Iyer,F,Cardiology,MBBS,18,+91 9939390981,geeta.iyer8@outlook.com,True
+19,Dr. Pankaj Ghosh,M,Pediatrics,MBBS,26,+91 8529597098,pankaj.ghosh59@hospital.org,True
+20,Dr. Deepak Rajput,M,Pulmonology,"MBBS, DNB",13,+91 7273222261,deepak.rajput16@gmail.com,False
+21,Dr. Kiara Krishnan,F,General Medicine,"MBBS, MS",19,+91 7577128279,kiara.krishnan62@hospital.org,True
+22,Dr. Ishaan Yadav,M,Oncology,MBBS,3,+91 8983979932,ishaan.yadav45@outlook.com,True
+23,Dr. Varun Sharma,M,Gastroenterology,"MBBS, MD, DM",22,+91 7388749117,varun.sharma75@hospital.org,False
+24,Dr. Varun Naidu,M,Neurology,"MBBS, FRCS",21,+91 8132812203,varun.naidu50@hospital.org,True
+25,Dr. Sara Joshi,F,Gynecology,"MBBS, MS",18,+91 8007156876,sara.joshi54@yahoo.com,True
+26,Dr. Ishita Krishnan,F,Gynecology,"MBBS, DNB",26,+91 7365960840,ishita.krishnan68@yahoo.com,True
+27,Dr. Arjun Modi,M,Gastroenterology,"MBBS, MS, MCh",22,+91 9355923377,arjun.modi84@outlook.com,True
+28,Dr. Ayaan Shukla,M,ENT,"MBBS, MD, DM",7,+91 8864937022,ayaan.shukla26@hospital.org,True
+29,Dr. Nikhil Reddy,M,Gynecology,MBBS,6,+91 9201856681,nikhil.reddy35@gmail.com,True
+30,Dr. Seema Kapoor,F,Psychiatry,"MBBS, MD, DM",24,+91 8644670639,seema.kapoor55@gmail.com,False
+31,Dr. Vijay Jain,M,Psychiatry,"MBBS, FRCS",7,+91 8422697243,vijay.jain83@hospital.org,False
+32,Dr. Swati Iyer,F,ENT,"MBBS, MS",18,+91 7607380881,swati.iyer70@yahoo.com,False
+33,Dr. Seema Patil,F,Nephrology,"MBBS, MD",5,+91 8378369345,seema.patil58@yahoo.com,True
+34,Dr. Swati Chatterjee,F,Pulmonology,"MBBS, MD, DNB",13,+91 8981064791,swati.chatterjee76@gmail.com,True
+35,Dr. Meera Patel,F,Nephrology,"MBBS, MS",26,+91 9769479493,meera.patel23@outlook.com,False
+36,Dr. Diya Pillai,F,Endocrinology,"MBBS, FRCS",7,+91 9865817856,diya.pillai16@gmail.com,True
+37,Dr. Pari Patil,F,Gynecology,"MBBS, DNB",18,+91 8159598977,pari.patil12@gmail.com,True
+38,Dr. Rekha Rathore,F,Orthopedics,MBBS,29,+91 9454148140,rekha.rathore11@yahoo.com,True
+39,Dr. Anvi Dutta,F,Gynecology,MBBS,17,+91 7246938610,anvi.dutta63@gmail.com,True
+40,Dr. Karan Srivastava,M,Cardiology,"MBBS, FRCS",9,+91 8290520630,karan.srivastava32@outlook.com,True
+41,Dr. Anirudh Iyer,M,Pediatrics,"MBBS, FRCS",6,+91 9804663740,anirudh.iyer1@yahoo.com,True
+42,Dr. Kusum Banerjee,F,Pulmonology,"MBBS, MS, MCh",10,+91 9675751168,kusum.banerjee51@outlook.com,True
+43,Dr. Siya Trivedi,F,Pulmonology,"MBBS, MD",14,+91 9750126963,siya.trivedi69@yahoo.com,False
+44,Dr. Anjali Desai,F,Dermatology,"MBBS, DNB",25,+91 7316510477,anjali.desai51@outlook.com,True
+45,Dr. Riya Mukherjee,F,Psychiatry,"MBBS, MS",27,+91 8604953306,riya.mukherjee14@hospital.org,False
+46,Dr. Vivaan Naidu,M,Neurology,"MBBS, FRCS",21,+91 8339496767,vivaan.naidu60@gmail.com,False
+47,Dr. Aarush Yadav,M,Psychiatry,"MBBS, DNB",7,+91 7030852911,aarush.yadav31@hospital.org,False
+48,Dr. Rohan Verma,M,Oncology,"MBBS, MS",26,+91 9734189797,rohan.verma26@outlook.com,True
+49,Dr. Ajay Mehta,M,Neurology,"MBBS, MD, DNB",27,+91 7138278655,ajay.mehta37@hospital.org,True
+50,Dr. Riya Patil,F,Orthopedics,"MBBS, FRCS",17,+91 9939545575,riya.patil27@outlook.com,True

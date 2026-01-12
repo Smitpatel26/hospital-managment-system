@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Doctors - Hospital Management System{% endblock %}
+{% block page_title %}Doctor Management{% endblock %}
+{% block breadcrumb %}Home / Doctors{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Actions -->
+    <div class="page-actions">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchDoctor" placeholder="Search doctors..." onkeyup="searchTable()">
+        </div>
+        <button class="btn btn-primary" onclick="openModal('addDoctorModal')">
+            <i class="fas fa-plus"></i>
+            Add Doctor
+        </button>
+    </div>
+
+    <!-- Doctor Cards Grid -->
+    <div class="doctors-grid">
+        {% for doctor in doctors %}
+        <div class="doctor-card">
+            <div class="doctor-avatar">
+                <i class="fas fa-user-md"></i>
+                <span class="status-dot {{ 'available' if doctor.is_available else 'unavailable' }}"></span>
+            </div>
+            <div class="doctor-info">
+                <h3>{{ doctor.name }}</h3>
+                <p class="specialization">{{ doctor.specialization }}</p>
+                <p class="qualification">{{ doctor.qualification }}</p>
+                <div class="doctor-meta">
+                    <span><i class="fas fa-briefcase"></i> {{ doctor.experience_years }} years exp</span>
+                </div>
+                <div class="doctor-contact">
+                    <span><i class="fas fa-phone"></i> {{ doctor.contact }}</span>
+                </div>
+            </div>
+            <div class="doctor-actions">
+                <button class="btn-sm btn-edit" onclick="editDoctor({{ doctor.doctor_id }})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-sm btn-delete" onclick="deleteDoctor({{ doctor.doctor_id }})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="availability-badge {{ 'available' if doctor.is_available else 'unavailable' }}">
+                {{ 'Available' if doctor.is_available else 'Unavailable' }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add Doctor Modal -->
+<div class="modal" id="addDoctorModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-user-md"></i> Add New Doctor</h3>
+            <button class="modal-close" onclick="closeModal('addDoctorModal')">×</button>
+        </div>
+        <form id="addDoctorForm" onsubmit="addDoctor(event)">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" name="name" required placeholder="Dr. Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        <select name="gender" required>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Specialization *</label>
+                        <select name="specialization" required>
+                            <option value="">Select Specialization</option>
+                            <option value="General Medicine">General Medicine</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Gynecology">Gynecology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Ophthalmology">Ophthalmology</option>
+                            <option value="ENT">ENT</option>
+                            <option value="Psychiatry">Psychiatry</option>
+                            <option value="Oncology">Oncology</option>
+                            <option value="Nephrology">Nephrology</option>
+                            <option value="Gastroenterology">Gastroenterology</option>
+                            <option value="Pulmonology">Pulmonology</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Qualification *</label>
+                        <select name="qualification" required>
+                            <option value="">Select Qualification</option>
+                            <option value="MBBS">MBBS</option>
+                            <option value="MBBS, MD">MBBS, MD</option>
+                            <option value="MBBS, MS">MBBS, MS</option>
+                            <option value="MBBS, MD, DM">MBBS, MD, DM</option>
+                            <option value="MBBS, MS, MCh">MBBS, MS, MCh</option>
+                            <option value="MBBS, DNB">MBBS, DNB</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Experience (Years) *</label>
+                        <input type="number" name="experience_years" required min="0" max="50" placeholder="Years">
+                    </div>
+                    <div class="form-group">
+                        <label>Available</label>
+                        <select name="is_available">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Number *</label>
+                        <input type="tel" name="contact" required placeholder="+91 XXXXX XXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="doctor@hospital.com">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addDoctorModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Doctor
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function searchTable() {
+        const input = document.getElementById('searchDoctor').value.toLowerCase();
+        const cards = document.querySelectorAll('.doctor-card');
+
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(input) ? '' : 'none';
+        });
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function addDoctor(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        data.is_available = data.is_available === 'true';
+
+        fetch('/api/doctors', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    location.reload();
+                }
+            });
+    }
+
+    function editDoctor(id) {
+        openModal('addDoctorModal');
+    }
+
+    function deleteDoctor(id) {
+        if (confirm('Are you sure you want to delete this doctor?')) {
+            fetch(`/api/doctors/${id}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        location.reload();
+                    }
+                });
+        }
+    }
+</script>
+{% endblock %}

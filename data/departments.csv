@@ -1,0 +1,11 @@
+dept_id,name,type,bed_charge_per_day,total_beds
+1,ICU,Critical Care,8500,10
+2,Cardiac ICU,Critical Care,12000,8
+3,Surgery Ward,Surgical,4500,10
+4,Orthopedic Ward,Orthopedic,3500,15
+5,Oncology Ward,Oncology,6000,12
+6,Maternity Ward,Maternity,3500,20
+7,Pediatric Ward,Pediatric,3000,20
+8,General Ward A,General,1800,30
+9,General Ward B,General,1800,30
+10,Emergency,Emergency,3500,15

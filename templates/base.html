@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hospital Management System{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    {% if current_user.is_authenticated %}
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <span>MediCare</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <!-- Dashboard - visible to all -->
+            <li class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Patients - visible to all except pure billing -->
+            {% if can_access('patients') %}
+            <li class="nav-item {% if request.endpoint == 'patients' %}active{% endif %}">
+                <a href="{{ url_for('patients') }}" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Patients</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Doctors - Admin only -->
+            {% if can_access('doctors') %}
+            <li class="nav-item {% if request.endpoint == 'doctors' %}active{% endif %}">
+                <a href="{{ url_for('doctors') }}" class="nav-link">
+                    <i class="fas fa-user-md"></i>
+                    <span>Doctors</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Doctor Schedule - Admin and Doctor -->
+            {% if can_access('doctor_schedule') %}
+            <li class="nav-item {% if request.endpoint == 'doctor_schedule' %}active{% endif %}">
+                <a href="{{ url_for('doctor_schedule') }}" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Doctor Schedule</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Beds - Admin, Receptionist, Nurse -->
+            {% if can_access('beds') %}
+            <li class="nav-item {% if request.endpoint == 'beds' %}active{% endif %}">
+                <a href="{{ url_for('beds') }}" class="nav-link">
+                    <i class="fas fa-bed"></i>
+                    <span>Beds</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Admissions - Admin, Receptionist, Nurse, Doctor -->
+            {% if can_access('admissions') %}
+            <li class="nav-item {% if request.endpoint == 'admissions' %}active{% endif %}">
+                <a href="{{ url_for('admissions') }}" class="nav-link">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Admissions</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Billing - Admin and Billing staff -->
+            {% if can_access('billing') %}
+            <li class="nav-item {% if request.endpoint == 'billing' %}active{% endif %}">
+                <a href="{{ url_for('billing') }}" class="nav-link">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Billing</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Analytics - Admin only -->
+            {% if can_access('analytics') %}
+            <li class="nav-item {% if request.endpoint == 'analytics' %}active{% endif %}">
+                <a href="{{ url_for('analytics') }}" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- User Management - Admin only -->
+            {% if is_admin %}
+            <li class="nav-item {% if request.endpoint == 'manage_users' %}active{% endif %}">
+                <a href="{{ url_for('manage_users') }}" class="nav-link">
+                    <i class="fas fa-users-cog"></i>
+                    <span>Manage Users</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <div class="user-details">
+                    <span class="user-name">{{ current_user.full_name or current_user.username }}</span>
+                    <span class="user-role">{{ current_user.role | capitalize }}</span>
+                </div>
+            </div>
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="page-title">
+                <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                <p class="breadcrumb">{% block breadcrumb %}Home{% endblock %}</p>
+            </div>
+
+            <div class="top-bar-actions">
+                <!-- Alerts Bell -->
+                <div class="alerts-container">
+                    <button class="alert-bell" id="alertBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="alert-count" id="alertCount">0</span>
+                    </button>
+                    <div class="alerts-dropdown" id="alertsDropdown">
+                        <h4>Notifications</h4>
+                        <div class="alerts-list" id="alertsList">
+                            <!-- Alerts loaded via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Time -->
+                <div class="current-time">
+                    <i class="fas fa-clock"></i>
+                    <span id="currentTime"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+            <i
+                class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+            {{ message }}
+            <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    {% else %}
+    <!-- Content for non-authenticated pages (login/signup) -->
+    {% block auth_content %}{% endblock %}
+    {% endif %}
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

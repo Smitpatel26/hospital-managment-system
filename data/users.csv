@@ -1,0 +1,3 @@
+user_id,username,email,password,role,full_name
+1,admin,admin@hospital.com,admin123,admin,Hospital Admin
+2,staff,staff@hospital.com,staff123,staff,Hospital Staff

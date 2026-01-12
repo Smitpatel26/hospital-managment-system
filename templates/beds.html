@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Beds - Hospital Management System{% endblock %}
+{% block page_title %}Bed Management{% endblock %}
+{% block breadcrumb %}Home / Beds{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Department Summary Cards -->
+    <div class="dept-summary">
+        {% for dept in departments %}
+        <div class="dept-card" data-dept-id="{{ dept.dept_id }}">
+            <div class="dept-header">
+                <i class="fas fa-hospital"></i>
+                <h4>{{ dept.name }}</h4>
+            </div>
+            <div class="dept-stats">
+                {% set occupied = beds | selectattr('dept_id', 'equalto', dept.dept_id) | selectattr('is_occupied',
+                'equalto', true) | list | length %}
+                {% set total = dept.total_beds or 0 %}
+                {% set available = total - occupied %}
+                <div class="stat">
+                    <span class="stat-value">{{ available }}</span>
+                    <span class="stat-label">Available</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ occupied }}</span>
+                    <span class="stat-label">Occupied</span>
+                </div>
+            </div>
+            <div class="occupancy-bar">
+                <div class="occupancy-fill" style="width: {{ (occupied / total * 100) if total > 0 else 0 }}%"></div>
+            </div>
+            <span class="occupancy-text">₹{{ dept.bed_charge_per_day }}/day</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Beds Visual Grid -->
+    <div class="data-card">
+        <div class="card-header">
+            <h3><i class="fas fa-bed"></i> Bed Status</h3>
+            <div class="filter-controls">
+                <select id="departmentFilter" class="filter-select">
+                    <option value="all">All Departments</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.dept_id }}">{{ dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="bed-legend">
+                <span class="legend-item"><span class="bed-dot available"></span> Available</span>
+                <span class="legend-item"><span class="bed-dot occupied"></span> Occupied</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="beds-grid">
+                {% for bed in beds %}
+                <div class="bed-item {{ 'occupied' if bed.is_occupied else 'available' }}" data-dept-id="{{ bed.dept_id }}" title="{{ bed.bed_number }}">
+                    <i class="fas fa-bed"></i>
+                    <span class="bed-number">{{ bed.bed_number }}</span>
+                    {% if bed.is_occupied %}
+                    <span class="bed-patient"><i class="fas fa-user"></i></span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filter beds by department
+document.getElementById('departmentFilter').addEventListener('change', function() {
+    const selectedDept = this.value;
+    
+    // Filter department cards
+    const deptCards = document.querySelectorAll('.dept-card');
+    deptCards.forEach(card => {
+        if (selectedDept === 'all' || card.getAttribute('data-dept-id') === selectedDept) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Filter bed items
+    const bedItems = document.querySelectorAll('.bed-item');
+    bedItems.forEach(bed => {
+        if (selectedDept === 'all' || bed.getAttribute('data-dept-id') === selectedDept) {
+            bed.style.display = '';
+        } else {
+            bed.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

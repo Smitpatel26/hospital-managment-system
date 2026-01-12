@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Schedule - Hospital Management System{% endblock %}
+{% block page_title %}Doctor Schedule{% endblock %}
+{% block breadcrumb %}Home / Doctor Schedule{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Actions -->
+    <div class="page-actions">
+        <div class="filter-group">
+            <select id="filterDept" onchange="filterSchedule()">
+                <option value="">All Departments</option>
+                {% for dept in departments %}
+                <option value="{{ dept.name }}">{{ dept.name }}</option>
+                {% endfor %}
+            </select>
+            <select id="filterShift" onchange="filterSchedule()">
+                <option value="">All Shifts</option>
+                <option value="Morning">Morning (6AM-2PM)</option>
+                <option value="Evening">Evening (2PM-10PM)</option>
+                <option value="Night">Night (10PM-6AM)</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('addAssignmentModal')">
+            <i class="fas fa-plus"></i>
+            Assign Doctor
+        </button>
+    </div>
+
+    <!-- Schedule Table -->
+    <div class="data-card">
+        <div class="card-header">
+            <h3><i class="fas fa-calendar-alt"></i> Ward Assignments</h3>
+            <span class="record-count">{{ assignments | length }} assignments</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="data-table" id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Ward/Department</th>
+                            <th>Shift</th>
+                            <th>Timing</th>
+                            <th>Duties</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assign in assignments %}
+                        <tr data-dept="{{ assign.department.name if assign.department else '' }}"
+                            data-shift="{{ assign.shift }}">
+                            <td>
+                                <div class="doctor-mini">
+                                    <i class="fas fa-user-md"></i>
+                                    <span>{{ assign.doctor.name if assign.doctor else 'Unknown' }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="dept-badge">{{ assign.department.name if assign.department else 'N/A'
+                                    }}</span>
+                            </td>
+                            <td>
+                                <span
+                                    class="shift-badge shift-{{ assign.shift | lower if assign.shift else 'morning' }}">
+                                    {{ assign.shift }}
+                                </span>
+                            </td>
+                            <td>
+                                {{ assign.duty_start_time.strftime('%I:%M %p') if assign.duty_start_time else '-' }} -
+                                {{ assign.duty_end_time.strftime('%I:%M %p') if assign.duty_end_time else '-' }}
+                            </td>
+                            <td>{{ assign.duties or 'General' }}</td>
+                            <td>{{ assign.assigned_date.strftime('%d %b %Y') if assign.assigned_date else '-' }}</td>
+                            <td>
+                                <span
+                                    class="status-badge status-{{ assign.status | lower if assign.status else 'active' }}">
+                                    {{ assign.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Assignment Modal -->
+<div class="modal" id="addAssignmentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-calendar-plus"></i> Assign Doctor to Ward</h3>
+            <button class="modal-close" onclick="closeModal('addAssignmentModal')">×</button>
+        </div>
+        <form id="addAssignmentForm" onsubmit="addAssignment(event)">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Doctor *</label>
+                        <select name="doctor_id" required>
+                            <option value="">Select Doctor</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.doctor_id }}">{{ doctor.name }} - {{ doctor.specialization }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ward/Department *</label>
+                        <select name="dept_id" required>
+                            <option value="">Select Ward</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.dept_id }}">{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Shift *</label>
+                        <select name="shift" required>
+                            <option value="Morning">Morning (6AM-2PM)</option>
+                            <option value="Evening">Evening (2PM-10PM)</option>
+                            <option value="Night">Night (10PM-6AM)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date *</label>
+                        <input type="date" name="assigned_date" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" name="duty_start_time" value="06:00">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" name="duty_end_time" value="14:00">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Duties</label>
+                        <select name="duties">
+                            <option value="Patient Rounds">Patient Rounds</option>
+                            <option value="OPD Consultation">OPD Consultation</option>
+                            <option value="Surgery">Surgery</option>
+                            <option value="Emergency Duty">Emergency Duty</option>
+                            <option value="ICU Monitoring">ICU Monitoring</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status">
+                            <option value="Active">Active</option>
+                            <option value="On Leave">On Leave</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    onclick="closeModal('addAssignmentModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Assignment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function filterSchedule() {
+        const dept = document.getElementById('filterDept').value.toLowerCase();
+        const shift = document.getElementById('filterShift').value.toLowerCase();
+        const rows = document.querySelectorAll('#scheduleTable tbody tr');
+
+        rows.forEach(row => {
+            const rowDept = row.dataset.dept.toLowerCase();
+            const rowShift = row.dataset.shift.toLowerCase();
+
+            const matchDept = !dept || rowDept.includes(dept);
+            const matchShift = !shift || rowShift === shift;
+
+            row.style.display = (matchDept && matchShift) ? '' : 'none';
+        });
+    }
+
+    function addAssignment(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        fetch('/api/assignments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    location.reload();
+                }
+            });
+    }
+</script>
+{% endblock %}

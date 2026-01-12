@@ -1,0 +1,101 @@
+assignment_id,doctor_id,dept_id,shift,duty_start_time,duty_end_time,assigned_date,duties,status
+1,40,8,Evening,14:00,22:00,2025-06-24,Emergency Duty,Active
+2,17,10,Evening,14:00,22:00,2024-09-01,Emergency Duty,Active
+3,5,10,Evening,14:00,22:00,2024-10-12,OPD Consultation,Active
+4,40,8,Night,22:00,06:00,2024-07-04,Surgery,Active
+5,13,4,Morning,06:00,14:00,2025-04-08,Surgery,On Leave
+6,7,1,Night,22:00,06:00,2025-10-08,ICU Monitoring,On Leave
+7,43,8,Morning,06:00,14:00,2025-12-31,ICU Monitoring,Active
+8,23,6,Evening,14:00,22:00,2024-06-24,Patient Rounds,Active
+9,6,6,Evening,14:00,22:00,2025-10-19,Surgery,Active
+10,50,10,Morning,06:00,14:00,2025-06-25,Emergency Duty,On Leave
+11,8,4,Morning,06:00,14:00,2024-03-09,Surgery,Active
+12,9,7,Evening,14:00,22:00,2024-04-30,Surgery,On Leave
+13,3,10,Evening,14:00,22:00,2024-04-07,Surgery,Active
+14,20,8,Evening,14:00,22:00,2025-09-25,Patient Rounds,Active
+15,31,1,Night,22:00,06:00,2024-12-03,Emergency Duty,Active
+16,27,9,Morning,06:00,14:00,2024-03-08,Surgery,Active
+17,47,4,Night,22:00,06:00,2025-12-17,Emergency Duty,On Leave
+18,14,4,Night,22:00,06:00,2025-05-31,OPD Consultation,On Leave
+19,27,10,Evening,14:00,22:00,2024-07-01,Surgery,On Leave
+20,31,5,Morning,06:00,14:00,2025-10-15,ICU Monitoring,Active
+21,49,5,Morning,06:00,14:00,2025-07-26,ICU Monitoring,Active
+22,45,1,Morning,06:00,14:00,2025-03-13,Patient Rounds,Active
+23,23,7,Evening,14:00,22:00,2024-05-07,Emergency Duty,Active
+24,42,10,Evening,14:00,22:00,2024-07-10,Patient Rounds,On Leave
+25,50,8,Morning,06:00,14:00,2025-07-23,OPD Consultation,Active
+26,11,7,Evening,14:00,22:00,2024-02-04,Emergency Duty,Active
+27,6,9,Morning,06:00,14:00,2025-03-03,Patient Rounds,Active
+28,9,2,Evening,14:00,22:00,2025-08-10,ICU Monitoring,Active
+29,31,8,Night,22:00,06:00,2024-08-18,Emergency Duty,Active
+30,39,7,Morning,06:00,14:00,2025-08-31,Emergency Duty,On Leave
+31,14,10,Morning,06:00,14:00,2024-07-29,Surgery,On Leave
+32,26,2,Night,22:00,06:00,2025-09-21,ICU Monitoring,Active
+33,37,6,Night,22:00,06:00,2024-03-29,OPD Consultation,Active
+34,45,3,Evening,14:00,22:00,2025-08-20,ICU Monitoring,Active
+35,36,10,Morning,06:00,14:00,2024-08-05,Surgery,On Leave
+36,17,10,Evening,14:00,22:00,2024-01-30,Patient Rounds,On Leave
+37,36,5,Evening,14:00,22:00,2024-07-20,ICU Monitoring,Active
+38,27,4,Night,22:00,06:00,2025-03-27,Surgery,Active
+39,36,1,Morning,06:00,14:00,2024-05-05,Surgery,Active
+40,18,5,Evening,14:00,22:00,2025-07-13,OPD Consultation,Active
+41,30,9,Morning,06:00,14:00,2025-08-14,Surgery,On Leave
+42,40,6,Evening,14:00,22:00,2024-04-30,Patient Rounds,Active
+43,23,2,Night,22:00,06:00,2025-12-12,Emergency Duty,Active
+44,48,10,Night,22:00,06:00,2025-10-31,Surgery,On Leave
+45,10,1,Morning,06:00,14:00,2024-05-21,Emergency Duty,Active
+46,15,2,Night,22:00,06:00,2024-04-18,ICU Monitoring,On Leave
+47,10,3,Evening,14:00,22:00,2024-10-08,Emergency Duty,Active
+48,26,7,Morning,06:00,14:00,2024-07-29,Patient Rounds,Active
+49,45,3,Morning,06:00,14:00,2025-06-09,Surgery,Active
+50,6,8,Night,22:00,06:00,2025-12-12,Patient Rounds,Active
+51,46,9,Night,22:00,06:00,2025-02-14,OPD Consultation,Active
+52,43,9,Morning,06:00,14:00,2024-08-02,Patient Rounds,Active
+53,8,8,Night,22:00,06:00,2025-11-29,Emergency Duty,Active
+54,13,5,Evening,14:00,22:00,2025-11-15,Surgery,Active
+55,32,8,Night,22:00,06:00,2025-10-04,Surgery,Active
+56,43,9,Night,22:00,06:00,2024-08-11,Patient Rounds,Active
+57,6,3,Morning,06:00,14:00,2024-07-14,Surgery,Active
+58,50,6,Night,22:00,06:00,2025-04-08,Emergency Duty,On Leave
+59,1,8,Evening,14:00,22:00,2025-07-22,OPD Consultation,Active
+60,38,4,Evening,14:00,22:00,2024-03-21,ICU Monitoring,Active
+61,40,9,Morning,06:00,14:00,2024-04-02,ICU Monitoring,Active
+62,42,9,Evening,14:00,22:00,2024-12-29,Emergency Duty,Active
+63,38,10,Morning,06:00,14:00,2024-01-06,ICU Monitoring,On Leave
+64,14,8,Night,22:00,06:00,2025-07-07,Emergency Duty,On Leave
+65,47,2,Evening,14:00,22:00,2024-02-09,Surgery,Active
+66,5,5,Night,22:00,06:00,2025-09-20,Patient Rounds,Active
+67,17,7,Night,22:00,06:00,2024-10-04,ICU Monitoring,On Leave
+68,38,2,Morning,06:00,14:00,2025-10-24,ICU Monitoring,Active
+69,41,5,Night,22:00,06:00,2025-12-03,OPD Consultation,On Leave
+70,19,6,Evening,14:00,22:00,2024-03-26,OPD Consultation,Active
+71,33,6,Evening,14:00,22:00,2024-09-03,Emergency Duty,On Leave
+72,23,6,Night,22:00,06:00,2025-10-06,OPD Consultation,Active
+73,25,4,Evening,14:00,22:00,2025-01-14,Patient Rounds,Active
+74,46,6,Evening,14:00,22:00,2025-05-31,Patient Rounds,Active
+75,12,8,Evening,14:00,22:00,2025-11-23,Surgery,On Leave
+76,47,10,Evening,14:00,22:00,2024-03-10,OPD Consultation,Active
+77,40,1,Night,22:00,06:00,2024-11-01,ICU Monitoring,Active
+78,50,8,Night,22:00,06:00,2024-03-11,Surgery,Active
+79,13,9,Night,22:00,06:00,2024-03-10,OPD Consultation,Active
+80,20,7,Night,22:00,06:00,2024-05-14,Patient Rounds,On Leave
+81,30,5,Night,22:00,06:00,2024-01-08,Emergency Duty,Active
+82,20,6,Night,22:00,06:00,2024-02-28,ICU Monitoring,Active
+83,31,2,Morning,06:00,14:00,2024-09-29,Patient Rounds,Active
+84,11,1,Evening,14:00,22:00,2025-07-28,Patient Rounds,On Leave
+85,28,3,Evening,14:00,22:00,2024-11-07,Emergency Duty,On Leave
+86,48,3,Night,22:00,06:00,2025-10-06,Patient Rounds,Active
+87,46,9,Morning,06:00,14:00,2025-09-04,OPD Consultation,Active
+88,5,4,Evening,14:00,22:00,2024-02-15,Patient Rounds,Active
+89,47,3,Evening,14:00,22:00,2025-03-15,Patient Rounds,Active
+90,10,1,Evening,14:00,22:00,2025-12-31,ICU Monitoring,Active
+91,12,8,Morning,06:00,14:00,2024-12-15,Surgery,On Leave
+92,23,6,Morning,06:00,14:00,2025-04-06,OPD Consultation,Active
+93,45,7,Morning,06:00,14:00,2025-09-18,Emergency Duty,Active
+94,31,4,Evening,14:00,22:00,2025-02-28,Patient Rounds,Active
+95,2,3,Morning,06:00,14:00,2025-07-03,Surgery,On Leave
+96,25,3,Night,22:00,06:00,2024-11-11,Surgery,Active
+97,15,4,Morning,06:00,14:00,2025-02-17,Surgery,On Leave
+98,37,3,Evening,14:00,22:00,2025-10-30,Surgery,On Leave
+99,7,9,Night,22:00,06:00,2025-10-17,ICU Monitoring,On Leave
+100,4,3,Morning,06:00,14:00,2025-05-22,OPD Consultation,On Leave

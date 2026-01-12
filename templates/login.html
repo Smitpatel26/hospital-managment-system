@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Hospital Management System{% endblock %}
+
+{% block auth_content %}
+<div class="auth-container" id="authContainer">
+    <!-- Medical Animation Background -->
+    <div class="auth-background">
+        <div class="heartbeat-line"></div>
+        <div class="floating-icons">
+            <i class="fas fa-heartbeat"></i>
+            <i class="fas fa-stethoscope"></i>
+            <i class="fas fa-pills"></i>
+            <i class="fas fa-syringe"></i>
+            <i class="fas fa-dna"></i>
+        </div>
+    </div>
+
+    <!-- Role Selection Cards -->
+    <div class="role-selection" id="roleSelection">
+        <div class="role-selection-header">
+            <div class="hospital-logo">
+                <i class="fas fa-hospital"></i>
+            </div>
+            <h1>MediCare Hospital</h1>
+            <p>Select Your Role to Login</p>
+        </div>
+
+        <div class="role-cards">
+            <div class="role-card" onclick="selectRole('admin')" data-role="admin">
+                <div class="role-icon admin-bg">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h3>Admin</h3>
+                <p>Full System Access</p>
+            </div>
+
+            <div class="role-card" onclick="selectRole('receptionist')" data-role="receptionist">
+                <div class="role-icon receptionist-bg">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                <h3>Receptionist</h3>
+                <p>Patient Registration</p>
+            </div>
+
+            <div class="role-card" onclick="selectRole('nurse')" data-role="nurse">
+                <div class="role-icon nurse-bg">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>Nurse</h3>
+                <p>Patient Care</p>
+            </div>
+
+            <div class="role-card" onclick="selectRole('billing')" data-role="billing">
+                <div class="role-icon billing-bg">
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+                <h3>Billing</h3>
+                <p>Payment & Invoices</p>
+            </div>
+
+            <div class="role-card" onclick="selectRole('doctor')" data-role="doctor">
+                <div class="role-icon doctor-bg">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h3>Doctor</h3>
+                <p>Medical Staff</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Form (Hidden initially) -->
+    <div class="auth-card role-login-card" id="loginCard" style="display: none;">
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> Back to Roles
+        </button>
+
+        <div class="auth-header" id="loginHeader">
+            <div class="hospital-logo" id="roleLogoIcon">
+                <i class="fas fa-hospital"></i>
+            </div>
+            <h1 id="roleTitle">Login</h1>
+            <p id="roleSubtitle">Enter your credentials</p>
+        </div>
+
+        <div class="auth-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="auth-flash flash-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember">
+                        <span>Remember me</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-btn" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span id="loginBtnText">Login</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Role Selection Styles */
+    .role-selection {
+        text-align: center;
+        z-index: 10;
+        position: relative;
+    }
+
+    .role-selection-header {
+        margin-bottom: 30px;
+    }
+
+    .role-selection-header .hospital-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+    }
+
+    .role-selection-header .hospital-logo i {
+        font-size: 40px;
+        color: white;
+    }
+
+    .role-selection-header h1 {
+        color: white;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .role-selection-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+    }
+
+    .role-cards {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        max-width: 900px;
+    }
+
+    .role-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px 25px;
+        width: 160px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .role-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .role-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+    }
+
+    .role-icon i {
+        font-size: 30px;
+        color: white;
+    }
+
+    .admin-bg {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+    }
+
+    .receptionist-bg {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    }
+
+    .nurse-bg {
+        background: linear-gradient(135deg, #EC4899, #BE185D);
+    }
+
+    .billing-bg {
+        background: linear-gradient(135deg, #10B981, #047857);
+    }
+
+    .doctor-bg {
+        background: linear-gradient(135deg, #6366F1, #4338CA);
+    }
+
+    .role-card h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 4px;
+    }
+
+    .role-card p {
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    /* Role-specific login styles */
+    .role-login-card {
+        animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: white;
+        border: 2px solid rgba(0, 121, 107, 0.3);
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary, #00796B);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .back-btn:hover {
+        background: var(--primary, #00796B);
+        color: white;
+        border-color: var(--primary, #00796B);
+        transform: translateX(-3px);
+        box-shadow: 0 4px 12px rgba(0, 121, 107, 0.3);
+    }
+
+    .back-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .back-btn:hover i {
+        transform: translateX(-3px);
+    }
+
+    /* Role-specific header colors */
+    .auth-header.admin-header {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+    }
+
+    .auth-header.receptionist-header {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    }
+
+    .auth-header.nurse-header {
+        background: linear-gradient(135deg, #EC4899, #BE185D);
+    }
+
+    .auth-header.billing-header {
+        background: linear-gradient(135deg, #10B981, #047857);
+    }
+
+    .auth-header.doctor-header {
+        background: linear-gradient(135deg, #6366F1, #4338CA);
+    }
+
+    /* Role-specific button colors */
+    .auth-btn.admin-btn {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+    }
+
+    .auth-btn.receptionist-btn {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    }
+
+    .auth-btn.nurse-btn {
+        background: linear-gradient(135deg, #EC4899, #BE185D);
+    }
+
+    .auth-btn.billing-btn {
+        background: linear-gradient(135deg, #10B981, #047857);
+    }
+
+    .auth-btn.doctor-btn {
+        background: linear-gradient(135deg, #6366F1, #4338CA);
+    }
+
+    .auth-btn.admin-btn:hover {
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+    }
+
+    .auth-btn.receptionist-btn:hover {
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .auth-btn.nurse-btn:hover {
+        box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+    }
+
+    .auth-btn.billing-btn:hover {
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .auth-btn.doctor-btn:hover {
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .role-cards {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .role-card {
+            width: 200px;
+        }
+    }
+</style>
+
+<script>
+    // Role configuration
+    const roleConfig = {
+        admin: {
+            title: 'Admin Login',
+            subtitle: 'Full System Access',
+            icon: 'fa-crown',
+            headerClass: 'admin-header',
+            btnClass: 'admin-btn'
+        },
+        receptionist: {
+            title: 'Receptionist Login',
+            subtitle: 'Patient Registration & Appointments',
+            icon: 'fa-id-card',
+            headerClass: 'receptionist-header',
+            btnClass: 'receptionist-btn'
+        },
+        nurse: {
+            title: 'Nurse Login',
+            subtitle: 'Patient Care & Monitoring',
+            icon: 'fa-heartbeat',
+            headerClass: 'nurse-header',
+            btnClass: 'nurse-btn'
+        },
+        billing: {
+            title: 'Billing Login',
+            subtitle: 'Payments & Invoices',
+            icon: 'fa-rupee-sign',
+            headerClass: 'billing-header',
+            btnClass: 'billing-btn'
+        },
+        doctor: {
+            title: 'Doctor Login',
+            subtitle: 'Medical Staff Portal',
+            icon: 'fa-stethoscope',
+            headerClass: 'doctor-header',
+            btnClass: 'doctor-btn'
+        }
+    };
+
+    function selectRole(role) {
+        const config = roleConfig[role];
+
+        // Hide role selection, show login form
+        document.getElementById('roleSelection').style.display = 'none';
+        document.getElementById('loginCard').style.display = 'block';
+
+        // Update header
+        const header = document.getElementById('loginHeader');
+        header.className = 'auth-header ' + config.headerClass;
+
+        document.getElementById('roleTitle').textContent = config.title;
+        document.getElementById('roleSubtitle').textContent = config.subtitle;
+        document.getElementById('roleLogoIcon').innerHTML = '<i class="fas ' + config.icon + '"></i>';
+
+        // Update button
+        const btn = document.getElementById('loginBtn');
+        btn.className = 'auth-btn ' + config.btnClass;
+        document.getElementById('loginBtnText').textContent = 'Login as ' + role.charAt(0).toUpperCase() + role.slice(1);
+    }
+
+    function goBack() {
+        document.getElementById('loginCard').style.display = 'none';
+        document.getElementById('roleSelection').style.display = 'block';
+    }
+
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+</script>
+{% endblock %}

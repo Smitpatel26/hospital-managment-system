@@ -1,0 +1,150 @@
+admission_id,patient_id,doctor_id,disease_id,bed_id,admit_date,discharge_date,status,notes
+1,1,50,3,1,2024-07-15,2024-07-24,Discharged,Patient admitted for Typhoid treatment
+2,2,1,18,3,2024-05-25,,Admitted,Patient admitted for Food Poisoning treatment
+3,3,48,2,6,2024-10-30,,Admitted,Patient admitted for Malaria treatment
+4,4,45,3,8,2024-04-07,2024-04-19,Discharged,Patient admitted for Typhoid treatment
+5,5,9,20,9,2025-01-21,2025-01-28,Discharged,Patient admitted for Viral Fever treatment
+6,6,3,1,10,2024-10-27,,Admitted,Patient admitted for Dengue Fever treatment
+7,7,12,17,11,2025-04-11,2025-04-19,Discharged,Patient admitted for Gastric Ulcer treatment
+8,8,45,20,12,2024-08-28,,Admitted,Patient admitted for Viral Fever treatment
+9,9,34,20,13,2024-05-06,,Admitted,Patient admitted for Viral Fever treatment
+10,10,38,10,19,2025-05-26,2025-05-31,Discharged,Patient admitted for Hypertension Crisis treatment
+11,11,1,10,20,2025-01-04,2025-01-11,Discharged,Patient admitted for Hypertension Crisis treatment
+12,12,35,20,24,2024-02-28,2024-02-29,Discharged,Patient admitted for Viral Fever treatment
+13,13,50,2,25,2025-07-11,2025-07-15,Discharged,Patient admitted for Malaria treatment
+14,14,10,10,27,2025-01-27,2025-02-06,Discharged,Patient admitted for Hypertension Crisis treatment
+15,15,4,13,29,2024-03-04,2024-03-10,Discharged,Patient admitted for Fracture treatment
+16,16,24,1,31,2024-08-14,2024-08-24,Discharged,Patient admitted for Dengue Fever treatment
+17,17,43,20,33,2024-03-14,2024-03-21,Discharged,Patient admitted for Viral Fever treatment
+18,18,39,13,34,2024-10-15,,Admitted,Patient admitted for Fracture treatment
+19,19,32,20,36,2025-04-05,2025-04-06,Discharged,Patient admitted for Viral Fever treatment
+20,20,29,1,40,2025-09-05,2025-09-08,Discharged,Patient admitted for Dengue Fever treatment
+21,21,37,20,41,2024-05-29,,Admitted,Patient admitted for Viral Fever treatment
+22,22,42,3,43,2025-09-27,2025-10-05,Discharged,Patient admitted for Typhoid treatment
+23,23,37,5,45,2024-01-18,2024-01-26,Discharged,Patient admitted for Pneumonia treatment
+24,24,17,1,49,2025-11-29,,Admitted,Patient admitted for Dengue Fever treatment
+25,25,5,3,51,2024-09-05,2024-09-11,Discharged,Patient admitted for Typhoid treatment
+26,26,23,13,55,2024-06-16,2024-06-25,Discharged,Patient admitted for Fracture treatment
+27,27,34,12,56,2024-05-14,2024-05-16,Discharged,Patient admitted for Kidney Stone treatment
+28,28,10,17,59,2024-11-22,,Admitted,Patient admitted for Gastric Ulcer treatment
+29,29,15,17,60,2025-07-08,2025-07-16,Discharged,Patient admitted for Gastric Ulcer treatment
+30,30,42,14,62,2024-06-07,2024-06-15,Discharged,Patient admitted for Diabetes Complications treatment
+31,31,43,1,64,2024-11-02,,Admitted,Patient admitted for Dengue Fever treatment
+32,32,3,17,66,2024-10-10,2024-10-13,Discharged,Patient admitted for Gastric Ulcer treatment
+33,33,23,20,68,2024-06-08,2024-06-09,Discharged,Patient admitted for Viral Fever treatment
+34,34,35,20,70,2024-01-16,2024-01-23,Discharged,Patient admitted for Viral Fever treatment
+35,35,27,3,72,2025-09-20,2025-10-01,Discharged,Patient admitted for Typhoid treatment
+36,36,37,1,74,2024-07-28,2024-08-04,Discharged,Patient admitted for Dengue Fever treatment
+37,37,15,1,76,2024-09-08,2024-09-15,Discharged,Patient admitted for Dengue Fever treatment
+38,38,30,20,77,2025-01-06,2025-01-13,Discharged,Patient admitted for Viral Fever treatment
+39,39,31,20,79,2025-01-05,,Admitted,Patient admitted for Viral Fever treatment
+40,40,14,15,80,2025-06-12,2025-06-21,Discharged,Patient admitted for Liver Disease treatment
+41,41,16,1,82,2024-07-30,2024-08-09,Discharged,Patient admitted for Dengue Fever treatment
+42,42,39,18,83,2025-04-24,2025-04-25,Discharged,Patient admitted for Food Poisoning treatment
+43,43,6,11,84,2024-04-16,2024-04-24,Discharged,Patient admitted for Appendicitis treatment
+44,44,10,7,85,2024-02-17,,Admitted,Patient admitted for Asthma Attack treatment
+45,45,22,5,86,2025-02-09,,Admitted,Patient admitted for Pneumonia treatment
+46,46,13,6,87,2024-12-03,,Admitted,Patient admitted for Tuberculosis treatment
+47,47,7,18,92,2025-09-09,2025-09-10,Discharged,Patient admitted for Food Poisoning treatment
+48,48,46,2,93,2025-07-16,2025-07-25,Discharged,Patient admitted for Malaria treatment
+49,49,9,17,94,2025-06-09,2025-06-12,Discharged,Patient admitted for Gastric Ulcer treatment
+50,50,22,7,96,2025-04-21,2025-04-28,Discharged,Patient admitted for Asthma Attack treatment
+51,51,12,17,98,2025-11-01,2025-11-05,Discharged,Patient admitted for Gastric Ulcer treatment
+52,52,32,6,99,2024-02-24,2024-03-14,Discharged,Patient admitted for Tuberculosis treatment
+53,53,25,4,100,2025-12-10,,Admitted,Patient admitted for COVID-19 treatment
+54,54,9,2,102,2025-10-04,2025-10-09,Discharged,Patient admitted for Malaria treatment
+55,55,3,20,103,2024-12-07,2024-12-08,Discharged,Patient admitted for Viral Fever treatment
+56,56,47,20,104,2025-10-08,2025-10-10,Discharged,Patient admitted for Viral Fever treatment
+57,57,21,18,106,2025-07-01,2025-07-02,Discharged,Patient admitted for Food Poisoning treatment
+58,58,37,11,107,2025-04-20,2025-04-28,Discharged,Patient admitted for Appendicitis treatment
+59,59,37,4,108,2025-01-07,2025-01-21,Discharged,Patient admitted for COVID-19 treatment
+60,60,34,7,113,2025-04-07,2025-04-11,Discharged,Patient admitted for Asthma Attack treatment
+61,61,23,17,119,2025-05-06,2025-05-10,Discharged,Patient admitted for Gastric Ulcer treatment
+62,62,25,4,120,2025-01-14,2025-01-23,Discharged,Patient admitted for COVID-19 treatment
+63,63,43,6,121,2024-12-21,,Admitted,Patient admitted for Tuberculosis treatment
+64,64,14,7,122,2024-04-17,2024-04-21,Discharged,Patient admitted for Asthma Attack treatment
+65,65,12,7,126,2024-03-20,2024-03-21,Discharged,Patient admitted for Asthma Attack treatment
+66,66,46,1,127,2024-07-06,,Admitted,Patient admitted for Dengue Fever treatment
+67,67,38,10,128,2025-12-23,2025-12-26,Discharged,Patient admitted for Hypertension Crisis treatment
+68,68,10,20,130,2024-11-15,2024-11-21,Discharged,Patient admitted for Viral Fever treatment
+69,69,47,9,135,2024-01-13,,Admitted,Patient admitted for Stroke treatment
+70,70,15,11,136,2025-11-16,,Admitted,Patient admitted for Appendicitis treatment
+71,71,47,14,143,2024-10-02,,Admitted,Patient admitted for Diabetes Complications treatment
+72,72,35,5,147,2024-02-06,2024-02-18,Discharged,Patient admitted for Pneumonia treatment
+73,73,42,20,148,2024-07-20,2024-07-25,Discharged,Patient admitted for Viral Fever treatment
+74,74,23,20,150,2025-08-19,2025-08-23,Discharged,Patient admitted for Viral Fever treatment
+75,75,27,3,151,2024-04-28,,Admitted,Patient admitted for Typhoid treatment
+76,76,13,8,152,2025-02-28,2025-03-12,Discharged,Patient admitted for Heart Attack treatment
+77,77,22,7,153,2025-01-20,,Admitted,Patient admitted for Asthma Attack treatment
+78,78,50,20,154,2024-07-30,2024-08-04,Discharged,Patient admitted for Viral Fever treatment
+79,79,21,6,156,2024-12-09,,Admitted,Patient admitted for Tuberculosis treatment
+80,80,48,19,161,2024-07-13,2024-07-20,Discharged,Patient admitted for Jaundice treatment
+81,81,30,13,162,2025-03-06,,Admitted,Patient admitted for Fracture treatment
+82,82,27,20,164,2024-04-16,2024-04-18,Discharged,Patient admitted for Viral Fever treatment
+83,83,19,2,165,2024-10-13,2024-10-18,Discharged,Patient admitted for Malaria treatment
+84,84,1,20,168,2024-03-20,2024-03-28,Discharged,Patient admitted for Viral Fever treatment
+85,85,6,7,169,2025-04-20,2025-04-21,Discharged,Patient admitted for Asthma Attack treatment
+86,86,38,6,138,2025-02-23,,Admitted,Patient admitted for Tuberculosis treatment
+87,87,30,20,114,2025-08-27,2025-08-31,Discharged,Patient admitted for Viral Fever treatment
+88,88,37,18,119,2025-09-16,2025-09-22,Discharged,Patient admitted for Food Poisoning treatment
+89,89,10,5,72,2024-01-15,,Admitted,Patient admitted for Pneumonia treatment
+90,90,8,1,38,2025-09-30,2025-10-08,Discharged,Patient admitted for Dengue Fever treatment
+91,91,46,20,115,2024-04-05,,Admitted,Patient admitted for Viral Fever treatment
+92,92,12,3,40,2024-08-02,,Admitted,Patient admitted for Typhoid treatment
+93,93,35,18,67,2025-05-12,,Admitted,Patient admitted for Food Poisoning treatment
+94,94,35,3,83,2024-08-14,2024-08-26,Discharged,Patient admitted for Typhoid treatment
+95,95,10,17,9,2024-04-07,2024-04-11,Discharged,Patient admitted for Gastric Ulcer treatment
+96,96,2,11,148,2025-03-24,2025-04-03,Discharged,Patient admitted for Appendicitis treatment
+97,97,47,20,21,2024-04-15,2024-04-22,Discharged,Patient admitted for Viral Fever treatment
+98,98,4,3,133,2025-07-17,2025-07-22,Discharged,Patient admitted for Typhoid treatment
+99,99,21,3,3,2025-09-12,2025-09-18,Discharged,Patient admitted for Typhoid treatment
+100,100,24,2,140,2024-07-18,,Admitted,Patient admitted for Malaria treatment
+101,101,41,20,7,2024-10-17,,Admitted,Patient admitted for Viral Fever treatment
+102,102,8,1,81,2025-11-06,2025-11-12,Discharged,Patient admitted for Dengue Fever treatment
+103,103,11,7,86,2025-04-04,2025-04-05,Discharged,Patient admitted for Asthma Attack treatment
+104,104,47,14,27,2025-04-16,,Admitted,Patient admitted for Diabetes Complications treatment
+105,105,16,10,57,2025-05-25,,Admitted,Patient admitted for Hypertension Crisis treatment
+106,106,31,12,43,2025-05-03,2025-05-11,Discharged,Patient admitted for Kidney Stone treatment
+107,107,8,9,138,2025-01-02,,Admitted,Patient admitted for Stroke treatment
+108,108,42,14,100,2024-05-05,2024-05-16,Discharged,Patient admitted for Diabetes Complications treatment
+109,109,48,18,123,2025-04-12,,Admitted,Patient admitted for Food Poisoning treatment
+110,110,48,4,140,2024-12-25,2025-01-05,Discharged,Patient admitted for COVID-19 treatment
+111,111,42,1,158,2025-09-19,2025-09-27,Discharged,Patient admitted for Dengue Fever treatment
+112,112,39,14,22,2025-05-30,,Admitted,Patient admitted for Diabetes Complications treatment
+113,113,20,7,114,2024-02-21,2024-02-26,Discharged,Patient admitted for Asthma Attack treatment
+114,114,15,20,165,2024-04-25,2024-05-01,Discharged,Patient admitted for Viral Fever treatment
+115,115,7,20,2,2025-01-05,,Admitted,Patient admitted for Viral Fever treatment
+116,116,37,2,128,2025-10-31,2025-11-05,Discharged,Patient admitted for Malaria treatment
+117,117,18,13,124,2024-03-26,,Admitted,Patient admitted for Fracture treatment
+118,118,6,13,66,2024-06-10,2024-06-21,Discharged,Patient admitted for Fracture treatment
+119,119,50,8,140,2024-01-11,2024-01-24,Discharged,Patient admitted for Heart Attack treatment
+120,120,44,7,152,2025-02-16,2025-02-18,Discharged,Patient admitted for Asthma Attack treatment
+121,121,36,2,136,2024-07-30,,Admitted,Patient admitted for Malaria treatment
+122,122,25,7,59,2024-04-03,2024-04-06,Discharged,Patient admitted for Asthma Attack treatment
+123,123,48,2,82,2024-08-13,2024-08-21,Discharged,Patient admitted for Malaria treatment
+124,124,36,9,119,2025-02-27,2025-03-17,Discharged,Patient admitted for Stroke treatment
+125,125,42,5,78,2024-02-16,,Admitted,Patient admitted for Pneumonia treatment
+126,126,29,7,154,2025-02-17,2025-02-22,Discharged,Patient admitted for Asthma Attack treatment
+127,127,32,8,42,2024-10-30,2024-11-14,Discharged,Patient admitted for Heart Attack treatment
+128,128,24,8,62,2025-11-18,2025-12-04,Discharged,Patient admitted for Heart Attack treatment
+129,129,8,15,68,2025-05-08,2025-05-18,Discharged,Patient admitted for Liver Disease treatment
+130,130,9,17,147,2024-10-25,2024-11-04,Discharged,Patient admitted for Gastric Ulcer treatment
+131,131,16,14,82,2024-03-03,2024-03-11,Discharged,Patient admitted for Diabetes Complications treatment
+132,132,31,3,136,2025-03-29,2025-04-09,Discharged,Patient admitted for Typhoid treatment
+133,133,39,17,136,2025-04-23,2025-05-03,Discharged,Patient admitted for Gastric Ulcer treatment
+134,134,4,6,55,2024-12-07,,Admitted,Patient admitted for Tuberculosis treatment
+135,135,27,2,45,2024-08-22,2024-08-24,Discharged,Patient admitted for Malaria treatment
+136,136,28,20,139,2025-05-08,,Admitted,Patient admitted for Viral Fever treatment
+137,137,24,5,30,2025-01-04,2025-01-11,Discharged,Patient admitted for Pneumonia treatment
+138,138,44,20,113,2024-12-28,2024-12-29,Discharged,Patient admitted for Viral Fever treatment
+139,139,50,15,74,2024-05-18,,Admitted,Patient admitted for Liver Disease treatment
+140,140,50,2,69,2025-07-27,,Admitted,Patient admitted for Malaria treatment
+141,141,4,7,64,2024-03-05,2024-03-09,Discharged,Patient admitted for Asthma Attack treatment
+142,142,13,1,61,2024-07-22,2024-07-29,Discharged,Patient admitted for Dengue Fever treatment
+143,143,15,19,57,2025-08-22,2025-08-28,Discharged,Patient admitted for Jaundice treatment
+144,144,45,19,132,2025-08-10,2025-08-19,Discharged,Patient admitted for Jaundice treatment
+145,145,11,20,129,2025-04-05,2025-04-13,Discharged,Patient admitted for Viral Fever treatment
+146,146,33,2,151,2024-07-16,2024-07-18,Discharged,Patient admitted for Malaria treatment
+147,147,26,18,165,2024-05-30,,Admitted,Patient admitted for Food Poisoning treatment
+148,148,24,4,59,2025-12-07,2025-12-18,Discharged,Patient admitted for COVID-19 treatment
+149,149,22,12,88,2024-05-31,2024-06-08,Discharged,Patient admitted for Kidney Stone treatment

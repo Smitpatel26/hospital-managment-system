@@ -1,0 +1,21 @@
+disease_id,name,treatment_cost,avg_stay_days,severity
+1,Dengue Fever,25000,5,Moderate
+2,Malaria,18000,4,Moderate
+3,Typhoid,22000,7,Moderate
+4,COVID-19,85000,10,Severe
+5,Pneumonia,45000,7,Severe
+6,Tuberculosis,35000,14,Severe
+7,Asthma Attack,12000,3,Moderate
+8,Heart Attack,250000,12,Critical
+9,Stroke,180000,15,Critical
+10,Hypertension Crisis,35000,5,Severe
+11,Appendicitis,65000,5,Moderate
+12,Kidney Stone,55000,4,Moderate
+13,Fracture,45000,7,Moderate
+14,Diabetes Complications,40000,6,Moderate
+15,Liver Disease,95000,10,Severe
+16,Cancer Treatment,350000,30,Critical
+17,Gastric Ulcer,28000,5,Moderate
+18,Food Poisoning,8000,2,Mild
+19,Jaundice,20000,7,Moderate
+20,Viral Fever,6000,3,Mild

@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - Hospital Management System{% endblock %}
+
+{% block auth_content %}
+<div class="auth-container">
+    <!-- Medical Animation Background -->
+    <div class="auth-background">
+        <div class="heartbeat-line"></div>
+        <div class="floating-icons">
+            <i class="fas fa-heartbeat"></i>
+            <i class="fas fa-stethoscope"></i>
+            <i class="fas fa-pills"></i>
+            <i class="fas fa-syringe"></i>
+            <i class="fas fa-dna"></i>
+        </div>
+    </div>
+
+    <div class="auth-card signup-card">
+        <div class="auth-header">
+            <div class="hospital-logo">
+                <i class="fas fa-hospital"></i>
+            </div>
+            <h1>MediCare Hospital</h1>
+            <p>Create Your Account</p>
+        </div>
+
+        <div class="auth-body">
+            <h2>Get Started</h2>
+            <p class="auth-subtitle">Register as hospital staff member</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="auth-flash flash-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('signup') }}" class="auth-form" id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full_name">
+                            <i class="fas fa-id-card"></i>
+                            Full Name
+                        </label>
+                        <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </label>
+                        <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" placeholder="Create a password" required
+                            minlength="6">
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"></div>
+                        <span class="strength-text">Password Strength</span>
+                    </div>
+                    <div class="password-requirements" id="passwordReqs">
+                        <p style="font-size: 11px; color: #666; margin: 8px 0 4px;">Password must contain:</p>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 11px;">
+                            <li id="req-length" class="req-unmet">✗ At least 8 characters</li>
+                            <li id="req-uppercase" class="req-unmet">✗ One uppercase letter (A-Z)</li>
+                            <li id="req-lowercase" class="req-unmet">✗ One lowercase letter (a-z)</li>
+                            <li id="req-number" class="req-unmet">✗ One number (0-9)</li>
+                            <li id="req-special" class="req-unmet">✗ One special symbol (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                    <style>
+                        .req-met {
+                            color: #10B981;
+                        }
+
+                        .req-met::before {
+                            content: '✓ ';
+                        }
+
+                        .req-unmet {
+                            color: #EF4444;
+                        }
+
+                        .req-unmet::before {
+                            content: '✗ ';
+                        }
+
+                        .password-requirements li {
+                            padding: 2px 0;
+                        }
+
+                        .password-requirements li::before {
+                            content: none !important;
+                        }
+                    </style>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">
+                        <i class="fas fa-lock"></i>
+                        Confirm Password
+                    </label>
+                    <input type="password" id="confirm_password" placeholder="Confirm your password" required>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+
+    // Password requirements
+    const requirements = {
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false
+    };
+
+    // Password strength checker with requirements
+    document.getElementById('password').addEventListener('input', function (e) {
+        const password = e.target.value;
+        const strengthBar = document.querySelector('.strength-bar');
+        const strengthText = document.querySelector('.strength-text');
+        const reqList = document.getElementById('passwordReqs');
+
+        // Check each requirement
+        requirements.length = password.length >= 8;
+        requirements.uppercase = /[A-Z]/.test(password);
+        requirements.lowercase = /[a-z]/.test(password);
+        requirements.number = /[0-9]/.test(password);
+        requirements.special = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~]/.test(password);
+
+        // Update requirement indicators
+        document.getElementById('req-length').className = requirements.length ? 'req-met' : 'req-unmet';
+        document.getElementById('req-uppercase').className = requirements.uppercase ? 'req-met' : 'req-unmet';
+        document.getElementById('req-lowercase').className = requirements.lowercase ? 'req-met' : 'req-unmet';
+        document.getElementById('req-number').className = requirements.number ? 'req-met' : 'req-unmet';
+        document.getElementById('req-special').className = requirements.special ? 'req-met' : 'req-unmet';
+
+        // Calculate strength
+        let strength = Object.values(requirements).filter(Boolean).length;
+
+        const colors = ['#ff4444', '#ff4444', '#ff8800', '#ffcc00', '#88cc00', '#00cc44'];
+        const texts = ['Very Weak', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
+
+        strengthBar.style.width = (strength * 20) + '%';
+        strengthBar.style.background = colors[strength] || '#ddd';
+        strengthText.textContent = texts[strength] || 'Password Strength';
+    });
+
+    // Form validation
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        // Check all requirements
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~]/.test(password);
+        const hasMinLength = password.length >= 8;
+
+        if (!hasMinLength) {
+            e.preventDefault();
+            alert('Password must be at least 8 characters long!');
+            return;
+        }
+
+        if (!hasUppercase) {
+            e.preventDefault();
+            alert('Password must contain at least one UPPERCASE letter (A-Z)!');
+            return;
+        }
+
+        if (!hasLowercase) {
+            e.preventDefault();
+            alert('Password must contain at least one lowercase letter (a-z)!');
+            return;
+        }
+
+        if (!hasNumber) {
+            e.preventDefault();
+            alert('Password must contain at least one number (0-9)!');
+            return;
+        }
+
+        if (!hasSpecial) {
+            e.preventDefault();
+            alert('Password must contain at least one special symbol (!@#$%^&* etc.)!');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+            return;
+        }
+    });
+</script>
+{% endblock %}

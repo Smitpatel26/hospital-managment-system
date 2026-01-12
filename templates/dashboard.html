@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Hospital Management System{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Home / Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- KPI Cards Row -->
+    <div class="kpi-cards">
+        <a href="{{ url_for('patients') }}" class="kpi-card patients-card"
+            style="text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="kpi-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>{{ stats.total_patients }}</h3>
+                <p>Total Patients</p>
+                <span class="kpi-tag">
+                    <i class="fas fa-user-plus"></i>
+                    {{ stats.admitted_patients }} Admitted
+                </span>
+            </div>
+            <div class="kpi-wave"></div>
+        </a>
+
+        <a href="{{ url_for('beds') }}" class="kpi-card beds-card"
+            style="text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="kpi-icon">
+                <i class="fas fa-bed"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>{{ stats.available_beds }} / {{ stats.total_beds }}</h3>
+                <p>Available Beds</p>
+                <span class="kpi-tag">
+                    <i class="fas fa-percentage"></i>
+                    {{ ((stats.total_beds - stats.available_beds) / stats.total_beds * 100) | round(1) if
+                    stats.total_beds > 0 else 0 }}% Occupied
+                </span>
+            </div>
+            <div class="kpi-wave"></div>
+        </a>
+
+        <a href="{{ url_for('doctors') }}" class="kpi-card doctors-card"
+            style="text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="kpi-icon">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>{{ stats.available_doctors }} / {{ stats.total_doctors }}</h3>
+                <p>Available Doctors</p>
+                <span class="kpi-tag">
+                    <i class="fas fa-check-circle"></i>
+                    On Duty Today
+                </span>
+            </div>
+            <div class="kpi-wave"></div>
+        </a>
+
+        <a href="{{ url_for('billing') }}" class="kpi-card revenue-card"
+            style="text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.2s;"
+            onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="kpi-icon">
+                <i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>₹{{ "{:,.0f}".format(stats.total_revenue | float) }}</h3>
+                <p>Total Revenue</p>
+                <span class="kpi-tag">
+                    <i class="fas fa-clock"></i>
+                    {{ stats.pending_bills }} Pending Bills
+                </span>
+            </div>
+            <div class="kpi-wave"></div>
+        </a>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+        <!-- Alerts Section -->
+        <div class="dashboard-card alerts-card">
+            <div class="card-header">
+                <h3><i class="fas fa-bell"></i> Active Alerts</h3>
+                <span class="alert-badge pulse">{{ alerts | length }}</span>
+            </div>
+            <div class="card-body">
+                {% if alerts %}
+                {% for alert in alerts %}
+                <div class="alert-item alert-{{ alert.severity | lower }}">
+                    <div class="alert-icon">
+                        {% if alert.severity == 'Critical' %}
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% elif alert.severity == 'Warning' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {% else %}
+                        <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="alert-content">
+                        <h4>{{ alert.alert_type }}</h4>
+                        <p>{{ alert.message }}</p>
+                    </div>
+                    <button class="dismiss-alert" onclick="dismissAlert({{ alert.alert_id }})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="no-alerts">
+                    <i class="fas fa-check-circle"></i>
+                    <p>No active alerts</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Bed Occupancy Chart -->
+        <div class="dashboard-card chart-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-pie"></i> Bed Occupancy</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="bedChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Admissions -->
+        <div class="dashboard-card admissions-card">
+            <div class="card-header">
+                <h3><i class="fas fa-clipboard-list"></i> Recent Admissions</h3>
+                <a href="{{ url_for('admissions') }}" class="view-all">View All</a>
+            </div>
+            <div class="card-body">
+                <table class="mini-table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for admission in recent_admissions %}
+                        <tr>
+                            <td>{{ admission.patient.name if admission.patient else 'Unknown' }}</td>
+                            <td>{{ admission.doctor.name if admission.doctor else 'Unknown' }}</td>
+                            <td>{{ admission.admit_date.strftime('%d %b') if admission.admit_date else '-' }}</td>
+                            <td>
+                                <span class="status-badge status-{{ admission.status | lower }}">
+                                    {{ admission.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-card actions-card">
+            <div class="card-header">
+                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            </div>
+            <div class="card-body">
+                <div class="quick-actions">
+                    <a href="{{ url_for('patients') }}" class="quick-action-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Add Patient</span>
+                    </a>
+                    <a href="{{ url_for('admissions') }}" class="quick-action-btn">
+                        <i class="fas fa-clipboard-plus"></i>
+                        <span>New Admission</span>
+                    </a>
+                    <a href="{{ url_for('billing') }}" class="quick-action-btn">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Generate Bill</span>
+                    </a>
+                    <a href="{{ url_for('analytics') }}" class="quick-action-btn">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>View Reports</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Dismiss alert function
+    function dismissAlert(alertId) {
+        fetch(`/api/alerts/${alertId}/read`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+    }
+
+    // Bed Occupancy Chart
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/analytics/beds')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('bedChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.map(d => d.department),
+                        datasets: [{
+                            data: data.map(d => d.occupancy_rate),
+                            backgroundColor: [
+                                '#00796B', '#00897B', '#00ACC1', '#0097A7',
+                                '#26A69A', '#4DB6AC', '#80CBC4', '#B2DFDB',
+                                '#009688', '#4DD0E1'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 15,
+                                    font: { family: 'Poppins' }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.label + ': ' + context.raw + '% occupied';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Admissions - Hospital Management System{% endblock %}
+{% block page_title %}Admission Management{% endblock %}
+{% block breadcrumb %}Home / Admissions{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Actions -->
+    <div class="page-actions">
+        <div class="filter-group">
+            <select id="filterStatus" onchange="filterAdmissions()">
+                <option value="">All Status</option>
+                <option value="Admitted">Admitted</option>
+                <option value="Discharged">Discharged</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('addAdmissionModal')">
+            <i class="fas fa-plus"></i>
+            New Admission
+        </button>
+    </div>
+
+    <!-- Admissions Table -->
+    <div class="data-card">
+        <div class="card-header">
+            <h3><i class="fas fa-clipboard-list"></i> All Admissions</h3>
+            <span class="record-count">{{ admissions | length }} records</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="data-table" id="admissionsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Disease</th>
+                            <th>Bed</th>
+                            <th>Admit Date</th>
+                            <th>Discharge Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for admission in admissions %}
+                        <tr data-status="{{ admission.status }}">
+                            <td>#{{ admission.admission_id }}</td>
+                            <td>{{ admission.patient.name if admission.patient else 'Unknown' }}</td>
+                            <td>{{ admission.doctor.name if admission.doctor else 'Unknown' }}</td>
+                            <td>{{ admission.disease.name if admission.disease else 'N/A' }}</td>
+                            <td>{{ admission.bed.bed_number if admission.bed else 'N/A' }}</td>
+                            <td>{{ admission.admit_date.strftime('%d %b %Y') if admission.admit_date else '-' }}</td>
+                            <td>{{ admission.discharge_date.strftime('%d %b %Y') if admission.discharge_date else '-' }}
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ admission.status | lower }}">
+                                    {{ admission.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if admission.status == 'Admitted' %}
+                                <button class="btn btn-sm btn-warning"
+                                    onclick="dischargePatient({{ admission.admission_id }})">
+                                    <i class="fas fa-sign-out-alt"></i> Discharge
+                                </button>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Admission Modal -->
+<div class="modal" id="addAdmissionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-clipboard-plus"></i> New Patient Admission</h3>
+            <button class="modal-close" onclick="closeModal('addAdmissionModal')">×</button>
+        </div>
+        <form id="addAdmissionForm" onsubmit="addAdmission(event)">
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient *</label>
+                        <select name="patient_id" required>
+                            <option value="">Select Patient</option>
+                            {% for patient in patients %}
+                            <option value="{{ patient.patient_id }}">{{ patient.name }} ({{ patient.age }}y, {{
+                                patient.gender }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Doctor *</label>
+                        <select name="doctor_id" required>
+                            <option value="">Select Doctor</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.doctor_id }}">{{ doctor.name }} - {{ doctor.specialization }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Disease/Diagnosis *</label>
+                        <select name="disease_id" required>
+                            <option value="">Select Disease</option>
+                            {% for disease in diseases %}
+                            <option value="{{ disease.disease_id }}">{{ disease.name }} ({{ disease.severity }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bed *</label>
+                        <select name="bed_id" required>
+                            <option value="">Select Available Bed</option>
+                            {% for bed in beds %}
+                            <option value="{{ bed.bed_id }}">{{ bed.bed_number }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Admit Date *</label>
+                        <input type="date" name="admit_date" required
+                            value="{{ now().strftime('%Y-%m-%d') if now else '' }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="2" placeholder="Additional notes..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    onclick="closeModal('addAdmissionModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Admit Patient
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function filterAdmissions() {
+        const status = document.getElementById('filterStatus').value;
+        const rows = document.querySelectorAll('#admissionsTable tbody tr');
+
+        rows.forEach(row => {
+            const rowStatus = row.dataset.status;
+            row.style.display = (!status || rowStatus === status) ? '' : 'none';
+        });
+    }
+
+    function addAdmission(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        fetch('/api/admissions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    location.reload();
+                }
+            });
+    }
+
+    function dischargePatient(admissionId) {
+        if (confirm('Discharge this patient?')) {
+            fetch(`/api/admissions/${admissionId}/discharge`, { method: 'POST' })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        location.reload();
+                    }
+                });
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Hospital Management System{% endblock %}
+{% block page_title %}Analytics & Reports{% endblock %}
+{% block breadcrumb %}Home / Analytics{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Analytics KPI Row -->
+    <div class="analytics-kpi">
+        <div class="kpi-box">
+            <div class="kpi-icon revenue"><i class="fas fa-rupee-sign"></i></div>
+            <div class="kpi-data">
+                <h2 id="totalRevenue">₹0</h2>
+                <p>Total Revenue</p>
+            </div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-icon patients"><i class="fas fa-users"></i></div>
+            <div class="kpi-data">
+                <h2 id="totalPatients">0</h2>
+                <p>Total Patients Treated</p>
+            </div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-icon avg"><i class="fas fa-calculator"></i></div>
+            <div class="kpi-data">
+                <h2 id="avgBill">₹0</h2>
+                <p>Average Bill Amount</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+        <!-- Revenue by Department -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-bar"></i> Revenue by Department</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="deptRevenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Disease Statistics -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-pie"></i> Disease Distribution</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="diseaseChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Monthly Admissions Trend -->
+        <div class="chart-card full-width">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-line"></i> Monthly Admission Trends</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="admissionTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Bed Occupancy -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3><i class="fas fa-bed"></i> Bed Occupancy by Ward</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="bedOccupancyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Doctor Workload -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3><i class="fas fa-user-md"></i> Doctor Patient Load</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="doctorWorkloadChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Seasonal Disease Trends -->
+        <div class="chart-card full-width">
+            <div class="chart-header"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <h3><i class="fas fa-cloud-sun-rain"></i> Seasonal Disease Trends</h3>
+                    <span style="font-size: 0.85rem; color: #666;">Which diseases are more common in each season</span>
+                </div>
+                <select id="seasonFilter"
+                    style="padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: white; font-size: 0.95rem; cursor: pointer; min-width: 150px;">
+                    <option value="all">All Seasons</option>
+                    <option value="Winter">❄️ Winter</option>
+                    <option value="Spring">🌸 Spring</option>
+                    <option value="Summer">☀️ Summer</option>
+                    <option value="Monsoon">🌧️ Monsoon</option>
+                    <option value="Autumn">🍂 Autumn</option>
+                </select>
+            </div>
+            <div class="chart-body" style="height: 350px;">
+                <canvas id="seasonalDiseaseChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Chart colors
+    const colors = ['#00796B', '#00897B', '#00ACC1', '#0097A7', '#26A69A',
+        '#4DB6AC', '#80CBC4', '#009688', '#4DD0E1', '#B2DFDB'];
+
+    // Load all analytics data
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fetch overview data
+        fetch('/api/analytics/overview')
+            .then(response => response.json())
+            .then(data => {
+                // Update KPIs
+                document.getElementById('totalRevenue').textContent = '₹' + data.total_revenue.toLocaleString('en-IN');
+
+                // Department Revenue Chart
+                if (data.department_revenue && data.department_revenue.length > 0) {
+                    new Chart(document.getElementById('deptRevenueChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: data.department_revenue.map(d => d.name),
+                            datasets: [{
+                                label: 'Revenue (₹)',
+                                data: data.department_revenue.map(d => d.revenue),
+                                backgroundColor: colors,
+                                borderRadius: 8
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+                }
+
+                // Disease Distribution Chart
+                if (data.disease_stats && data.disease_stats.length > 0) {
+                    new Chart(document.getElementById('diseaseChart'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.disease_stats.slice(0, 8).map(d => d.name),
+                            datasets: [{
+                                data: data.disease_stats.slice(0, 8).map(d => d.count),
+                                backgroundColor: colors
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'right' }
+                            }
+                        }
+                    });
+                }
+
+                // Monthly Admissions Trend
+                if (data.monthly_admissions && data.monthly_admissions.length > 0) {
+                    new Chart(document.getElementById('admissionTrendChart'), {
+                        type: 'line',
+                        data: {
+                            labels: data.monthly_admissions.map(d => d.month),
+                            datasets: [{
+                                label: 'Admissions',
+                                data: data.monthly_admissions.map(d => d.count),
+                                borderColor: '#00796B',
+                                backgroundColor: 'rgba(0, 121, 107, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }
+            });
+
+        // Fetch bed occupancy
+        fetch('/api/analytics/beds')
+            .then(response => response.json())
+            .then(data => {
+                new Chart(document.getElementById('bedOccupancyChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.department),
+                        datasets: [
+                            {
+                                label: 'Occupied',
+                                data: data.map(d => d.occupied),
+                                backgroundColor: '#D32F2F'
+                            },
+                            {
+                                label: 'Available',
+                                data: data.map(d => d.available),
+                                backgroundColor: '#00796B'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { stacked: true }, y: { stacked: true } }
+                    }
+                });
+            });
+
+        // Fetch doctor workload
+        fetch('/api/analytics/doctors')
+            .then(response => response.json())
+            .then(data => {
+                new Chart(document.getElementById('doctorWorkloadChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.name.replace('Dr. ', '')),
+                        datasets: [{
+                            label: 'Current Patients',
+                            data: data.map(d => d.patients),
+                            backgroundColor: '#00ACC1',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            });
+
+        // Fetch bills for stats
+        fetch('/api/bills')
+            .then(response => response.json())
+            .then(bills => {
+                const paidBills = bills.filter(b => b.status === 'Paid');
+                const totalPatients = paidBills.length;
+                const avgBill = totalPatients > 0 ?
+                    paidBills.reduce((sum, b) => sum + b.total_amount, 0) / totalPatients : 0;
+
+                document.getElementById('totalPatients').textContent = totalPatients;
+                document.getElementById('avgBill').textContent = '₹' + Math.round(avgBill).toLocaleString('en-IN');
+            });
+
+        // Fetch seasonal disease data
+        let seasonalData = null;
+        let seasonalChart = null;
+
+        const seasonColors = {
+            'Winter': '#5C6BC0',
+            'Spring': '#66BB6A',
+            'Summer': '#FFA726',
+            'Monsoon': '#29B6F6',
+            'Autumn': '#8D6E63'
+        };
+
+        function renderSeasonalChart(selectedSeason) {
+            if (!seasonalData) return;
+
+            // Filter data based on selection
+            const filteredData = selectedSeason === 'all'
+                ? seasonalData
+                : seasonalData.filter(s => s.season === selectedSeason);
+
+            if (filteredData.length === 0) return;
+
+            // Get diseases for filtered seasons
+            const allDiseases = new Set();
+            filteredData.forEach(s => s.diseases.forEach(d => allDiseases.add(d.name)));
+            const diseaseList = Array.from(allDiseases);
+
+            // Create datasets
+            const datasets = filteredData.map(seasonData => {
+                const counts = diseaseList.map(disease => {
+                    const found = seasonData.diseases.find(d => d.name === disease);
+                    return found ? found.count : 0;
+                });
+                return {
+                    label: seasonData.season,
+                    data: counts,
+                    backgroundColor: seasonColors[seasonData.season],
+                    borderRadius: 4
+                };
+            });
+
+            // Destroy existing chart
+            if (seasonalChart) {
+                seasonalChart.destroy();
+            }
+
+            seasonalChart = new Chart(document.getElementById('seasonalDiseaseChart'), {
+                type: 'bar',
+                data: {
+                    labels: diseaseList.map(d => d.length > 15 ? d.substring(0, 15) + '...' : d),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { usePointStyle: true }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.dataset.label + ': ' + context.raw + ' cases';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Number of Cases' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Disease' }
+                        }
+                    }
+                }
+            });
+        }
+
+        fetch('/api/analytics/seasonal-diseases')
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    seasonalData = data;
+                    renderSeasonalChart('all');
+
+                    // Add dropdown event listener
+                    document.getElementById('seasonFilter').addEventListener('change', function () {
+                        renderSeasonalChart(this.value);
+                    });
+                }
+            });
+    });
+</script>
+{% endblock %}

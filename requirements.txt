@@ -8,6 +8,9 @@ psycopg2-binary==2.9.9
 flask-sqlalchemy==3.1.1
 sqlalchemy==2.0.30
 
+# Greenlet (required for SQLAlchemy async, pinned to fix deployment error)
+greenlet==3.0.3
+
 # Flask Login - User Authentication
 flask-login==0.6.3
 

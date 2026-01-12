@@ -4,12 +4,9 @@ flask==3.0.0
 # PostgreSQL Database Connector
 psycopg2-binary==2.9.9
 
-# SQLAlchemy - Database ORM (pinned for compatibility)
-flask-sqlalchemy==3.1.1
-sqlalchemy==2.0.30
-
-# Greenlet (required for SQLAlchemy async, pinned to fix deployment error)
-greenlet==3.0.3
+# SQLAlchemy - Database ORM (Use stable 1.4.x for guaranteed deployment)
+flask-sqlalchemy==3.0.5
+sqlalchemy==1.4.52
 
 # Flask Login - User Authentication
 flask-login==0.6.3

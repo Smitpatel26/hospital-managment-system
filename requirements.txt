@@ -4,9 +4,9 @@ flask==3.0.0
 # PostgreSQL Database Connector
 psycopg2-binary==2.9.9
 
-# SQLAlchemy - Database ORM (makes database work easier)
+# SQLAlchemy - Database ORM (pinned for compatibility)
 flask-sqlalchemy==3.1.1
-sqlalchemy==2.0.23
+sqlalchemy==2.0.30
 
 # Flask Login - User Authentication
 flask-login==0.6.3

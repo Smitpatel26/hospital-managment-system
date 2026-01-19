@@ -303,26 +303,45 @@ def page_access_required(page_name):
 @app.context_processor
 def inject_permissions():
     """Make role and permissions available in all templates"""
-    if current_user.is_authenticated:
+    try:
+        if current_user.is_authenticated:
+            return {
+                'user_role': current_user.role,
+                'user_permissions': get_user_permissions(),
+                'can_access': can_access_page,
+                'can_action': can_perform_action,
+                'is_admin': current_user.role == 'admin'
+            }
         return {
-            'user_role': current_user.role,
-            'user_permissions': get_user_permissions(),
-            'can_access': can_access_page,
-            'can_action': can_perform_action,
-            'is_admin': current_user.role == 'admin'
+            'user_role': None,
+            'user_permissions': {'pages': [], 'actions': []},
+            'can_access': lambda x: False,
+            'can_action': lambda x: False,
+            'is_admin': False
         }
-    return {
-        'user_role': None,
-        'user_permissions': {'pages': [], 'actions': []},
-        'can_access': lambda x: False,
-        'can_action': lambda x: False,
-        'is_admin': False
-    }
+    except Exception as e:
+        import sys
+        import traceback
+        print(f"ERROR in inject_permissions: {e}", file=sys.stderr)
+        traceback.print_exc()
+        # Return safe defaults
+        return {
+            'user_role': None,
+            'user_permissions': {'pages': [], 'actions': []},
+            'can_access': lambda x: False,
+            'can_action': lambda x: False,
+            'is_admin': False
+        }
 
 
 # =====================================================
 # ROUTES - AUTHENTICATION
 # =====================================================
+
+@app.before_request
+def log_request():
+    import sys
+    print(f"REQUEST: {request.method} {request.path}", file=sys.stderr)
 
 @app.route('/')
 def index():
@@ -348,7 +367,8 @@ def login():
             login_user(user)
             user.last_login = datetime.utcnow()
             db.session.commit()
-            flash('Login successful!', 'success')
+            import sys
+            print(f"DEBUG: Login successful for {user.username}", file=sys.stderr)
             return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password', 'error')
@@ -434,30 +454,46 @@ def logout():
 @login_required
 def dashboard():
     """Main dashboard"""
-    # Get statistics
-    stats = {
-        'total_patients': Patient.query.count(),
-        'admitted_patients': Admission.query.filter_by(status='Admitted').count(),
-        'available_beds': Bed.query.filter_by(is_occupied=False).count(),
-        'total_beds': Bed.query.count(),
-        'available_doctors': Doctor.query.filter_by(is_available=True).count(),
-        'total_doctors': Doctor.query.count(),
-        'pending_bills': Bill.query.filter_by(status='Pending').count(),
-        'total_revenue': db.session.query(db.func.sum(Bill.total_amount)).filter(
-            Bill.status == 'Paid'
-        ).scalar() or 0
-    }
-    
-    # Recent admissions
-    recent_admissions = Admission.query.order_by(Admission.admit_date.desc()).limit(5).all()
-    
-    # Get alerts
-    alerts = Alert.query.filter_by(is_read=False).order_by(Alert.created_at.desc()).limit(5).all()
-    
-    # Check for critical conditions and create alerts
-    check_and_create_alerts()
-    
-    return render_template('dashboard.html', stats=stats, recent_admissions=recent_admissions, alerts=alerts)
+    try:
+        # Get statistics
+        stats = {
+            'total_patients': Patient.query.count(),
+            'admitted_patients': Admission.query.filter_by(status='Admitted').count(),
+            'available_beds': Bed.query.filter_by(is_occupied=False).count(),
+            'total_beds': Bed.query.count(),
+            'available_doctors': Doctor.query.filter_by(is_available=True).count(),
+            'total_doctors': Doctor.query.count(),
+            'pending_bills': Bill.query.filter_by(status='Pending').count(),
+            'total_revenue': db.session.query(db.func.sum(Bill.total_amount)).filter(
+                Bill.status == 'Paid'
+            ).scalar() or 0
+        }
+        
+        # Recent admissions
+        recent_admissions = Admission.query.order_by(Admission.admit_date.desc()).limit(5).all()
+        
+        # Get alerts
+        alerts = Alert.query.filter_by(is_read=False).order_by(Alert.created_at.desc()).limit(5).all()
+        
+        # Check for critical conditions and create alerts
+        check_and_create_alerts()
+        
+        print(f"DEBUG: Rendering dashboard for User: {current_user.username}, Role: {current_user.role}")
+        return render_template('dashboard.html', stats=stats, recent_admissions=recent_admissions, alerts=alerts)
+    except Exception as e:
+        import sys
+        import traceback
+        import os
+        
+        # Write to error.log
+        error_file = os.path.join(os.getcwd(), "error.log")
+        with open(error_file, "w") as f:
+            f.write(f"Error in dashboard: {str(e)}\n")
+            traceback.print_exc(file=f)
+            
+        print(f"ERROR rendering dashboard: {e}", file=sys.stderr)
+        traceback.print_exc()
+        return f"Internal Error: {e}. Check error.log for details.", 500
 
 
 def check_and_create_alerts():
@@ -1228,6 +1264,120 @@ def delete_user(user_id):
     db.session.commit()
     
     return jsonify({'success': True})
+
+
+# =====================================================
+# DATABASE INITIALIZATION ROUTE (For Production Setup)
+# =====================================================
+
+@app.route('/initialize-db-secret-route-2024')
+def initialize_database_route():
+    """Initialize database via web - ONE TIME USE ONLY"""
+    try:
+        # Check if already initialized
+        if User.query.first():
+            return "Database already initialized! Please go to <a href='/login'>/login</a>"
+        
+        # Create admin user
+        admin = User(
+            username='admin',
+            email='admin@hospital.com',
+            full_name='System Administrator',
+            role='admin'
+        )
+        admin.set_password('Admin@123')
+        db.session.add(admin)
+        
+        # Create other users
+        users_data = [
+            ('receptionist1', 'receptionist@hospital.com', 'John Receptionist', 'receptionist'),
+            ('nurse1', 'nurse@hospital.com', 'Mary Nurse', 'nurse'),
+            ('billing1', 'billing@hospital.com', 'Robert Billing', 'billing'),
+            ('doctor1', 'doctor@hospital.com', 'Dr. Sarah Doctor', 'doctor'),
+        ]
+        
+        for username, email, full_name, role in users_data:
+            user = User(username=username, email=email, full_name=full_name, role=role)
+            user.set_password('Hospital@123')
+            db.session.add(user)
+        
+        # Create departments
+        departments_data = [
+            {'name': 'ICU', 'type': 'Critical Care', 'bed_charge_per_day': 5000, 'total_beds': 10},
+            {'name': 'General Ward', 'type': 'General', 'bed_charge_per_day': 2000, 'total_beds': 50},
+            {'name': 'Emergency', 'type': 'Emergency', 'bed_charge_per_day': 3000, 'total_beds': 20},
+            {'name': 'Surgery Ward', 'type': 'Surgical', 'bed_charge_per_day': 4000, 'total_beds': 30},
+            {'name': 'Cardiac Care', 'type': 'Specialized', 'bed_charge_per_day': 6000, 'total_beds': 15},
+        ]
+        
+        departments = []
+        for dept_data in departments_data:
+            dept = Department(**dept_data)
+            db.session.add(dept)
+            departments.append(dept)
+        
+        db.session.flush()
+        
+        # Create beds
+        for dept in departments:
+            prefix = dept.name[:3].upper()
+            for i in range(1, dept.total_beds + 1):
+                bed = Bed(
+                    dept_id=dept.dept_id,
+                    bed_number=f"{prefix}-{i:03d}",
+                    is_occupied=False
+                )
+                db.session.add(bed)
+        
+        # Create diseases
+        diseases_data = [
+            {'name': 'Pneumonia', 'treatment_cost': 25000, 'avg_stay_days': 7, 'severity': 'Moderate'},
+            {'name': 'Heart Attack', 'treatment_cost': 150000, 'avg_stay_days': 10, 'severity': 'Critical'},
+            {'name': 'Diabetes', 'treatment_cost': 15000, 'avg_stay_days': 3, 'severity': 'Mild'},
+            {'name': 'Fracture', 'treatment_cost': 35000, 'avg_stay_days': 5, 'severity': 'Moderate'},
+            {'name': 'Appendicitis', 'treatment_cost': 45000, 'avg_stay_days': 4, 'severity': 'Moderate'},
+        ]
+        
+        for disease_data in diseases_data:
+            disease = Disease(**disease_data)
+            db.session.add(disease)
+        
+        # Create doctors
+        doctors_data = [
+            {'name': 'Dr. Rajesh Kumar', 'gender': 'M', 'specialization': 'Cardiology', 
+             'qualification': 'MBBS, MD', 'experience_years': 15, 'contact': '9876543210', 
+             'email': 'rajesh@hospital.com', 'is_available': True},
+            {'name': 'Dr. Priya Sharma', 'gender': 'F', 'specialization': 'Pediatrics', 
+             'qualification': 'MBBS, DCH', 'experience_years': 10, 'contact': '9876543211', 
+             'email': 'priya@hospital.com', 'is_available': True},
+            {'name': 'Dr. Amit Patel', 'gender': 'M', 'specialization': 'Orthopedics', 
+             'qualification': 'MBBS, MS', 'experience_years': 12, 'contact': '9876543212', 
+             'email': 'amit@hospital.com', 'is_available': True},
+        ]
+        
+        for doctor_data in doctors_data:
+            doctor = Doctor(**doctor_data)
+            db.session.add(doctor)
+        
+        db.session.commit()
+        
+        return """
+        <h1>✅ Database Initialized Successfully!</h1>
+        <p>Your hospital management system is ready to use.</p>
+        <h2>Login Credentials:</h2>
+        <ul>
+            <li><strong>Admin:</strong> admin / Admin@123</li>
+            <li><strong>Receptionist:</strong> receptionist1 / Hospital@123</li>
+            <li><strong>Nurse:</strong> nurse1 / Hospital@123</li>
+            <li><strong>Billing:</strong> billing1 / Hospital@123</li>
+            <li><strong>Doctor:</strong> doctor1 / Hospital@123</li>
+        </ul>
+        <p><a href="/login" style="font-size: 20px; color: #00796B;">Go to Login Page →</a></p>
+        """
+        
+    except Exception as e:
+        import traceback
+        return f"<h1>Error initializing database:</h1><pre>{str(e)}\n\n{traceback.format_exc()}</pre>"
 
 
 # =====================================================

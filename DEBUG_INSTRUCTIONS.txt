@@ -1,0 +1,10 @@
+# Quick Test Instructions
+
+Please try logging in ONE MORE TIME while this file is open.
+
+After you try to login and see the error:
+1. Check your terminal where `python app.py` is running
+2. Copy ANY error messages or tracebacks you see
+3. Paste them here or tell me what you see
+
+This will help me see the exact error!

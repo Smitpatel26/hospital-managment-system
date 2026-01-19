@@ -99,6 +99,8 @@
      ```
    - **Plan**: Free
 
+   - **Plan**: Free
+
 4. **Add Environment Variables**
    Scroll down to "Environment Variables" section and add:
    
@@ -106,7 +108,9 @@
    |-----|-------|
    | `DATABASE_URL` | Paste the Internal Database URL from Step 2 |
    | `SECRET_KEY` | `your-random-secret-key-12345` (change this!) |
-   | `PYTHON_VERSION` | `3.11.0` |
+   | `PYTHON_VERSION` | `3.11.9` |
+
+   > **Note:** We have included a `runtime.txt` file is your repository to pin the Python version to 3.11.9. This ensures stability and avoids errors with database drivers.
 
 5. **Click "Create Web Service"**
    - Render will start building your application

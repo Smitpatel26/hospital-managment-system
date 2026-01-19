@@ -2,7 +2,7 @@
 flask==3.0.0
 
 # PostgreSQL Database Connector
-psycopg2-binary==2.9.9
+psycopg2-binary>=2.9.10
 
 # SQLAlchemy - Database ORM (Use stable 1.4.x for guaranteed deployment)
 flask-sqlalchemy==3.0.5
